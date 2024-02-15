@@ -62,7 +62,6 @@
 
 <script>
 export default {
-
   data() {
     return {
       username: "",
@@ -73,18 +72,12 @@ export default {
   methods: {
     async login() {
       try {
-        const response = await fetch("http://52.91.198.151:8080/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            username: this.username,
-            password: this.password,
-          }),
+        const response = await axios.post("/login", {
+          username: this.username,
+          password: this.password,
         });
 
-        const data = await response.json();
+        const data = response.data;
 
         if (data.user) {
           // Dispatch the 'login' action with user data
