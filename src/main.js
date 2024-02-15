@@ -26,7 +26,7 @@ Vue.config.productionTip = false;
 
 // Add Axios to the Vue prototype
 Vue.prototype.$axios = axios;
-axios.defaults.baseURL = 'http://52.91.198.151:8080/';
+axios.defaults.baseURL = 'http://carwashadmin.hexpeak.co.in:8080/';
 
 new Vue({
   router,
