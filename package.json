@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@mdi/font": "^7.4.47",
+    "axios": "^1.6.7",
     "core-js": "^3.6.2",
     "moment": "^2.30.1",
     "vue": "^2.6.11",
@@ -28,11 +29,10 @@
     "eslint-plugin-vue": "^8.0.3",
     "sass": "~1.32.0",
     "sass-loader": "^10.0.0",
+    "vee-validate": "^3.2.2",
     "vue-cli-plugin-vuetify": "~2.5.8",
     "vue-template-compiler": "^2.6.14",
-    "vuetify-loader": "^1.7.0",
-    "vee-validate": "^3.2.2"
-
+    "vuetify-loader": "^1.7.0"
   },
   "eslintConfig": {
     "root": true,

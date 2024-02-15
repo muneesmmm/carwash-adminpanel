@@ -16,7 +16,8 @@
           <v-chip color="success">{{ item.role }}</v-chip>
         </template>
         <template v-slot:[`item.action`]="{ item }">
-          <v-btn color="success" @click="viewDetails(item._id)">view</v-btn>&nbsp;&nbsp;
+          <v-btn color="success" @click="viewDetails(item._id)">view</v-btn
+          >&nbsp;&nbsp;
           <v-btn color="red" @click="deleteUserData(item._id)">Delete</v-btn>
         </template>
       </v-data-table>
@@ -31,6 +32,8 @@
 
 <script>
 import CreateUserDialog from "../components/CreateUserDialog.vue";
+import axios from "axios";
+
 export default {
   components: { CreateUserDialog },
   name: "DashboardDashboard",
@@ -58,20 +61,20 @@ export default {
     },
     async fetchData() {
       try {
-        const response = await fetch("http://52.91.198.151:8080/get-users", {
-          method: "POST",
+        const response = await axios.post("/get-users", {
           headers: {
             "Content-Type": "application/json",
           },
         });
+
         if (!response.status) {
           throw new Error(`Failed to fetch data: ${response.statusText}`);
         }
-        const data = await response.json();
-        this.userData = data.user;
+
+        this.userData = response.data.user;
         console.log(this.userData);
-      } catch (e) {
-        console.error("Error fetching user data:", e);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
       } finally {
         // Code to be executed after the request, if needed
       }
@@ -117,15 +120,17 @@ export default {
     async deleteUserData(item) {
       try {
         const id = item;
-        const response = await fetch("http://52.91.198.151:8080/delete-user", {
-          method: "POST", // Use POST method to send user ID in the body
-          headers: {
-            "Content-Type": "application/json", // Specify content type
-          },
-          // Include the ID in the request body
-          body: JSON.stringify({ id }),
-        });
-        if (!response.ok) {
+        const response = await axios.post(
+          "/delete-user",
+          { id },
+          {
+            headers: {
+              "Content-Type": "application/json", // Specify content type
+            },
+          }
+        );
+
+        if (!response.data) {
           throw new Error("Failed to fetch user data");
         } else {
           this.fetchData();

@@ -15,6 +15,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   name: "WashDashboard",
 
@@ -34,23 +36,23 @@ export default {
   methods: {
     async totalWashes() {
       try {
-        const response = await fetch("http://52.91.198.151:8080/get-washes", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        if (!response.status) {
-          throw new Error(`Failed to fetch data: ${response.statusText}`);
-        }
-        const data = await response.json();
-        this.washHustory = data.data;
-        console.log(this.washHustory);
-      } catch (e) {
-        console.error("Error fetching user data:", e);
-      } finally {
-        // Code to be executed after the request, if needed
-      }
+  const response = await axios.post("/get-washes", {
+    headers: {
+      "Content-Type": "application/json"
+    }
+  });
+
+  if (!response.status) {
+    throw new Error(`Failed to fetch data: ${response.statusText}`);
+  }
+
+  this.washHustory = response.data.data;
+  console.log(this.washHustory);
+} catch (error) {
+  console.error("Error fetching user data:", error);
+} finally {
+  // Code to be executed after the request, if needed
+}
     }
   },
   mounted() {

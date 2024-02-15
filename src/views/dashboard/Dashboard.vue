@@ -22,7 +22,10 @@
         </template>
         <template v-slot:[`item.vehicleNumber`]="{ item }">
           <span v-for="(val, i) in item.vehicles" :key="i">
-            <v-card class="text-capitalize font-weight-bold px-2 py-2 text-center">{{ val.vehicleNumber }}</v-card>
+            <v-card
+              class="text-capitalize font-weight-bold px-2 py-2 text-center"
+              >{{ val.vehicleNumber }}</v-card
+            >
           </span>
         </template>
         <template v-slot:[`item.vehicles`]="{ item }">
@@ -66,6 +69,8 @@
 
 <script>
 import ViewProfile from "./components/ViewProfile.vue";
+import axios from 'axios';
+
 export default {
   components: { ViewProfile },
   name: "DashboardDashboard",
@@ -117,23 +122,27 @@ export default {
     },
     async fetchData() {
       try {
-        const response = await fetch("http://52.91.198.151:8080/get-customers", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            // Add any other headers if needed
+        const response = await axios.post(
+          "/get-customers",
+          {
+            // Add your request body if you need to send data in the request
+            // data: { key: 'value' }
           },
-          // Add your request body if you need to send data in the request
-          // body: JSON.stringify({ key: 'value' }),
-        });
+          {
+            headers: {
+              "Content-Type": "application/json",
+              // Add any other headers if needed
+            },
+          }
+        );
 
         // Ensure the request was successful (status code 2xx)
-        if (!response.ok) {
-          throw new Error(`Failed to fetch data: ${response.statusText}`);
+        if (response.customer) {
+          throw new Error("Failed to fetch data");
         }
 
         // Parse the JSON response
-        const data = await response.json();
+        const data = await response.data;
 
         // Assuming your server responds with a property named 'customer'
         this.userData = data.customer;

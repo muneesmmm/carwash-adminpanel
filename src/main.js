@@ -11,18 +11,22 @@
 //
 // * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
-import Vue from 'vue'
-import App from './App.vue'
-import router from './router'
-import store from './store'
-import './plugins/base'
-import './plugins/vee-validate'
-import vuetify from './plugins/vuetify'
-import i18n from './i18n'
-import '@mdi/font/css/materialdesignicons.css'
+import Vue from 'vue';
+import App from './App.vue';
+import router from './router';
+import store from './store';
+import './plugins/base';
+import './plugins/vee-validate';
+import vuetify from './plugins/vuetify';
+import axios from 'axios';
+import i18n from './i18n';
+import '@mdi/font/css/materialdesignicons.css';
 
+Vue.config.productionTip = false;
 
-Vue.config.productionTip = false
+// Add Axios to the Vue prototype
+Vue.prototype.$axios = axios;
+axios.defaults.baseURL = 'http://52.91.198.151:8080/';
 
 new Vue({
   router,
@@ -30,4 +34,4 @@ new Vue({
   vuetify,
   i18n,
   render: h => h(App),
-}).$mount('#app')
+}).$mount('#app');
