@@ -83,31 +83,31 @@ export default {
       this.addCustomerDialog = true;
     },
     async saveCustomer(newCustomer) {
-  try {
-    const response = await axios.post("/register", newCustomer);
+      try {
+        const response = await axios.post("/register", newCustomer);
 
-    if (!response.status) {
-      throw new Error(`Failed to register user: ${response.statusText}`);
-    }
+        if (!response.status) {
+          throw new Error(`Failed to register user: ${response.statusText}`);
+        }
 
-    // Assuming the API response contains the registered user data
-    const registeredUser = response.data;
+        // Assuming the API response contains the registered user data
+        const registeredUser = response.data;
 
-    // Add the registered user to the data table
-    this.userData.push({
-      _id: registeredUser.id, // Change this based on the actual response structure
-      name: registeredUser.name,
-      email: registeredUser.email,
-      phone: registeredUser.phone,
-    });
+        // Add the registered user to the data table
+        this.userData.push({
+          _id: registeredUser.id, // Change this based on the actual response structure
+          name: registeredUser.name,
+          email: registeredUser.email,
+          phone: registeredUser.phone,
+        });
 
-    // Reset form and close dialog
-    this.fetchData();
-    this.addCustomerDialog = false;
-  } catch (error) {
-    console.error("Error registering user:", error);
-  }
-}
+        // Reset form and close dialog
+        this.fetchData();
+        this.addCustomerDialog = false;
+      } catch (error) {
+        console.error("Error registering user:", error);
+      }
+    },
 
     cancelAddCustomer() {
       this.addCustomerDialog = false;
