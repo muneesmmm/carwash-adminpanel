@@ -1,6 +1,57 @@
 <template>
   <v-container id="staff-profile" fluid tag="section">
     <v-row justify="center">
+      <v-col cols="12" md="4">
+        <base-material-card>
+          <template v-slot:heading>
+            <div class="display-2 font-weight-light">Profile</div>
+          </template>
+          <v-card-text class="text-left">
+            <h6 class="display-2 font-weight-black mb-1 black--text">
+              {{ userData.name }}
+            </h6>
+
+            <h4 class="display-2 font-weight-light mb-3 black--text">
+              {{ userData.role }}
+            </h4>
+            <h6 class="display-1 mb-1 grey--text">
+              {{ userData.email }}
+            </h6>
+            <h6 class="display-1 mb-1 grey--text">
+              {{ userData.phone }}
+            </h6>
+            <v-btn
+              color="success"
+              rounded
+              class="mr-0 mt-3"
+              @click="isUpdate =!isUpdate"
+            >
+              Edit Profile
+            </v-btn>
+          </v-card-text>
+        </base-material-card>
+        <base-material-card>
+          <template v-slot:heading>
+            <div class="display-2 font-weight-light">Today Washes</div>
+          </template>
+          <v-card-text class="text-center">
+            <v-card>
+              <v-row class="font-weight-bold">
+                <v-col>Vehicle Number</v-col>
+                <v-col>Type</v-col>
+                <v-col>Time</v-col>
+              </v-row>
+            </v-card>
+            <v-card v-for="(item, index) in todayWashes" :key="index">
+              <v-row>
+                <v-col>{{ item?.vehicle?.vehicleNumber }}</v-col>
+                <v-col>{{ item?.washType }}</v-col>
+                <v-col>{{ getWashTime(item.washDate) }}</v-col>
+              </v-row>
+            </v-card>
+          </v-card-text>
+        </base-material-card>
+      </v-col>
       <v-col cols="12" md="8">
         <base-material-card v-if="isUpdate">
           <template v-slot:heading>
@@ -75,58 +126,6 @@
               <v-btn color="red">Delete</v-btn>
             </template>
           </v-data-table>
-        </base-material-card>
-      </v-col>
-
-      <v-col cols="12" md="4">
-        <base-material-card>
-          <template v-slot:heading>
-            <div class="display-2 font-weight-light">Profile</div>
-          </template>
-          <v-card-text class="text-left">
-            <h6 class="display-2 font-weight-black mb-1 black--text">
-              {{ userData.name }}
-            </h6>
-
-            <h4 class="display-2 font-weight-light mb-3 black--text">
-              {{ userData.role }}
-            </h4>
-            <h6 class="display-1 mb-1 grey--text">
-              {{ userData.email }}
-            </h6>
-            <h6 class="display-1 mb-1 grey--text">
-              {{ userData.phone }}
-            </h6>
-            <v-btn
-              color="success"
-              rounded
-              class="mr-0 mt-3"
-              @click="isUpdate =!isUpdate"
-            >
-              Edit Profile
-            </v-btn>
-          </v-card-text>
-        </base-material-card>
-        <base-material-card>
-          <template v-slot:heading>
-            <div class="display-2 font-weight-light">Today Washes</div>
-          </template>
-          <v-card-text class="text-center">
-            <v-card>
-              <v-row class="font-weight-bold">
-                <v-col>Vehicle Number</v-col>
-                <v-col>Type</v-col>
-                <v-col>Time</v-col>
-              </v-row>
-            </v-card>
-            <v-card v-for="(item, index) in todayWashes" :key="index">
-              <v-row>
-                <v-col>{{ item?.vehicle?.vehicleNumber }}</v-col>
-                <v-col>{{ item?.washType }}</v-col>
-                <v-col>{{ getWashTime(item.washDate) }}</v-col>
-              </v-row>
-            </v-card>
-          </v-card-text>
         </base-material-card>
       </v-col>
     </v-row>
