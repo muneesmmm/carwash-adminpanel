@@ -1,20 +1,9 @@
 <template>
   <v-container id="dashboard" fluid tag="section">
-    <!-- <v-row>
-      <v-col cols="12" md="4" sm="6">
-        <v-card> Total Users</v-card>
-      </v-col>
-      <v-col cols="12" md="4" sm="6">
-        <v-card> Total Users</v-card>
-      </v-col>
-      <v-col cols="12" md="4" sm="6">
-        <v-card> Total Users</v-card>
-      </v-col>
-    </v-row> -->
     <base-material-card
       icon="mdi-clipboard-text"
       title="Manage Customers"
-      class="px-5 py-3"
+      class="px-5 py-5"
     >
       <v-data-table :headers="headers" :items="userData">
         <template v-slot:[`item._id`]="{ item, index }">
@@ -37,26 +26,6 @@
           <v-btn small @click="viewCustomerDetails(item)">View</v-btn>
         </template>
       </v-data-table>
-      <!-- <v-simple-table>
-          <thead>
-            <tr>
-              <th
-                v-for="(header, index) in headers"
-                :key="index"
-                class="primary--text"
-              >
-                {{ header.title }}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(item, index) in userData" :key="index">
-              <td v-for="(header, keyIndex) in headers" :key="keyIndex">
-                {{ item[header.key] }}
-              </td>
-            </tr>
-          </tbody>
-        </v-simple-table> -->
     </base-material-card>
     <view-profile
       v-if="selectedUser"
@@ -98,7 +67,7 @@ export default {
       headers: [
         { text: "ID", value: "_id" },
         { text: "Name", value: "name" },
-        { text: "vehicle Number", value: "vehicleNumber" },
+        { text: "Vehicles Number", value: "vehicleNumber" },
         { text: "Phone", value: "phone" },
         { text: "Vehicles", value: "vehicles" },
         { text: "Action", value: "action" },

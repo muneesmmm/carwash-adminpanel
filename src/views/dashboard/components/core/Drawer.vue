@@ -79,9 +79,7 @@
     <template v-slot:append>
       <base-item
         :item="{
-          title: $t('upgrade'),
-          icon: 'mdi-package-up',
-          to: '/upgrade',
+          title: 'hexpeak',
         }"
       />
     </template>

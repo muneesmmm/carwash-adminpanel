@@ -43,7 +43,9 @@
           <template v-slot:heading>
             <div class="display-2 font-weight-light">Wash History</div>
 
-            <div class="subtitle-1 font-weight-light">Total Completed Washes</div>
+            <div class="subtitle-1 font-weight-light">
+              Total Completed Washes
+            </div>
           </template>
           <v-data-table :headers="headers" :items="washHistory">
             <template v-slot:[`item._id`]="{ item, index }">
@@ -125,6 +127,7 @@
 
 <script>
 import moment from "moment";
+import axios from 'axios';
 export default {
   data() {
     return {
@@ -150,21 +153,16 @@ export default {
     async fetchUserData() {
       try {
         const id = this.$route.params.id;
-        const response = await fetch("http://52.91.198.151:8080/getuser", {
-          method: "POST", // Use POST method to send user ID in the body
-          headers: {
-            "Content-Type": "application/json", // Specify content type
-          },
-          // Include the ID in the request body
-          body: JSON.stringify({ id }),
+        const response = await axios.post("/getuser", {
+          id,
         });
-        if (!response.ok) {
+
+        if (!response.status) {
           throw new Error("Failed to fetch user data");
         }
-        // Parse response data as JSON
-        const data = await response.json();
+
         // Set userData to the received data
-        this.userData = data.user;
+        this.userData = response.data.user;
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -172,19 +170,21 @@ export default {
     async fetchTodayData() {
       try {
         const id = this.$route.params.id;
-        const response = await fetch("http://52.91.198.151:8080/today-washes/" + id, {
-          method: "POST", // Use POST method to send user ID in the body
-          headers: {
-            "Content-Type": "application/json", // Specify content type
-          },
-        });
-        if (!response.ok) {
+        const response = await axios.post(
+          `/today-washes/${id}`, // No request body needed
+          {
+            headers: {
+              "Content-Type": "application/json", // Specify content type
+            },
+          }
+        );
+
+        if (!response) {
           throw new Error("Failed to fetch user data");
         }
-        // Parse response data as JSON
-        const data = await response.json();
-        // Set userData to the received data
-        this.todayWashes = data.data;
+
+        // Set todayWashes to the received data
+        this.todayWashes = response.data.data;
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -192,19 +192,21 @@ export default {
     async fetchTotalData() {
       try {
         const id = this.$route.params.id;
-        const response = await fetch("http://52.91.198.151:8080/get-washes/" + id, {
-          method: "POST", // Use POST method to send user ID in the body
-          headers: {
-            "Content-Type": "application/json", // Specify content type
-          },
-        });
-        if (!response.ok) {
+        const response = await axios.post(
+          `/get-washes/${id}`, // No request body needed
+          {
+            headers: {
+              "Content-Type": "application/json", // Specify content type
+            },
+          }
+        );
+
+        if (!response.status) {
           throw new Error("Failed to fetch user data");
         }
-        // Parse response data as JSON
-        const data = await response.json();
-        // Set userData to the received data
-        this.washHistory = data.data;
+
+        // Set todayWashes to the received data
+        this.washHistory = response.data.data;
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
