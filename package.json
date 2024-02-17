@@ -2,10 +2,13 @@
   "name": "carwash-adminpanel",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://muneesmmm.github.io/carwash-adminpanel",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
+    "deploy": "gh-pages -d dist",
+    "predeploy": "npm run build",
     "dev": "set NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service serve --open"
   },
   "dependencies": {
@@ -30,6 +33,7 @@
     "@vue/cli-service": "^5.0.8",
     "eslint": "^7.32.0",
     "eslint-plugin-vue": "^8.0.3",
+    "gh-pages": "^6.1.1",
     "sass": "~1.32.0",
     "sass-loader": "^10.0.0",
     "vee-validate": "^3.2.2",
