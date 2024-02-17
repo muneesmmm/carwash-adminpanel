@@ -23,7 +23,7 @@
           </v-Chip>
         </template>
         <template v-slot:[`item.action`]="{ item }">
-          <v-btn small @click="viewCustomerDetails(item)">View</v-btn>
+          <v-btn color="primary" small @click="viewCustomerDetails(item)">View</v-btn>
         </template>
       </v-data-table>
     </base-material-card>

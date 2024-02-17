@@ -1,8 +1,8 @@
 <template>
   <v-row justify="center">
-    <v-dialog v-model="internalDialog" max-width="600px">
+    <v-dialog v-model="internalDialog" @click:outside="cancelCustomer" max-width="600px">
       <v-card>
-        <v-card-title> Add New Customer </v-card-title>
+        <v-card-title class="text-h3"> Add New Customer </v-card-title>
         <v-card-text>
           <v-form ref="form" v-model="valid">
             <v-text-field v-model="newCustomer.username" label="Username"></v-text-field>
@@ -13,8 +13,8 @@
           </v-form>
         </v-card-text>
         <v-card-actions>
-          <v-btn @click="saveCustomer" :disabled="!valid">Register</v-btn>
-          <v-btn @click="cancelCustomer">Cancel</v-btn>
+          <v-btn class="primary" @click="saveCustomer" :disabled="!valid">Register</v-btn>
+          <v-btn class="error" @click="cancelCustomer">Cancel</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

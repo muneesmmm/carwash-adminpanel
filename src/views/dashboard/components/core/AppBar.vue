@@ -30,7 +30,7 @@
 
     <v-spacer />
 
-    <v-text-field
+    <!-- <v-text-field
       :label="$t('search')"
       color="secondary"
       hide-details
@@ -49,9 +49,9 @@
           <v-icon>mdi-magnify</v-icon>
         </v-btn>
       </template>
-    </v-text-field>
+    </v-text-field> -->
 
-    <div class="mx-3" />
+    <!-- <div class="mx-3" /> -->
 
     <v-btn
       class="ml-2"
@@ -62,7 +62,7 @@
       <v-icon>mdi-view-dashboard</v-icon>
     </v-btn>
 
-    <v-menu
+    <!-- <v-menu
       bottom
       left
       offset-y
@@ -104,16 +104,16 @@
           </app-bar-item>
         </div>
       </v-list>
-    </v-menu>
+    </v-menu> -->
 
-    <v-btn
+    <!-- <v-btn
       class="ml-2"
       min-width="0"
       text
       to="/pages/user"
     >
       <v-icon>mdi-account</v-icon>
-    </v-btn>
+    </v-btn> -->
   </v-app-bar>
 </template>
 

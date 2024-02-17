@@ -2,7 +2,7 @@
   <v-container id="staff-profile" fluid tag="section">
     <v-row justify="center">
       <v-col cols="12" md="8">
-        <!-- <base-material-card>
+        <base-material-card v-if="isUpdate">
           <template v-slot:heading>
             <div class="display-2 font-weight-light">Edit Profile</div>
 
@@ -14,31 +14,38 @@
           <v-form>
             <v-container class="py-0">
               <v-row>
-                <v-col cols="12" md="4">
-                  <v-text-field class="purple-input" label="User Name" />
-                </v-col>
-
-                <v-col cols="12" md="4">
-                  <v-text-field label="Email Address" class="purple-input" />
+                <v-col cols="12" md="6">
+                  <v-text-field class="purple-input" v-model="userData.name" label="User Name" />
                 </v-col>
 
                 <v-col cols="12" md="6">
-                  <v-text-field label="Name" class="purple-input" />
+                  <v-text-field label="Email Address" v-model="userData.email" class="purple-input" />
                 </v-col>
-                <v-col cols="12" md="4">
+
+                <v-col cols="12" md="6">
                   <v-text-field
                     class="purple-input"
+                    v-model="userData.phone"
                     label="Phone"
                     type="number"
                   />
                 </v-col>
+                <v-col cols="12" md="6">
+                  <v-text-field
+                    class="purple-input"
+                    v-model="newPassword"
+                    label="New Password"
+                    type="password"
+                  />
+                </v-col>
                 <v-col cols="12" class="text-right">
-                  <v-btn color="success" class="mr-0"> Update Profile </v-btn>
+                  <v-btn @click="isUpdate=!isUpdate" color="error" class="mr-2"> Cancel </v-btn>
+                  <v-btn @click="updateCustomer" color="primary" class="mr-0"> Update Profile </v-btn>
                 </v-col>
               </v-row>
             </v-container>
           </v-form>
-        </base-material-card> -->
+        </base-material-card>
         <base-material-card>
           <template v-slot:heading>
             <div class="display-2 font-weight-light">Wash History</div>
@@ -90,13 +97,14 @@
             <h6 class="display-1 mb-1 grey--text">
               {{ userData.phone }}
             </h6>
-            <!-- <v-btn
+            <v-btn
               color="success"
               rounded
-              class="mr-0"
+              class="mr-0 mt-3"
+              @click="isUpdate =!isUpdate"
             >
-              Follow
-            </v-btn> -->
+              Edit Profile
+            </v-btn>
           </v-card-text>
         </base-material-card>
         <base-material-card>
@@ -141,6 +149,8 @@ export default {
       userData: [],
       todayWashes: [],
       washHistory: [], // Initialize userData as an empty array
+      isUpdate:false,
+      newPassword:''
     };
   },
   created() {
@@ -150,6 +160,27 @@ export default {
     this.fetchTotalData();
   },
   methods: {
+    async updateCustomer() {
+      try {
+        if(this.newPassword){
+          this.userData.password = this.newPassword;
+        }
+        const response = await axios.post(
+          `/update/${this.userData._id}`,
+          this.userData
+        );
+
+        if (!response.status) {
+          throw new Error(`Failed to update user: ${response.statusText}`);
+        }
+        const updatedUserData = response.data;
+        console.log(updatedUserData);
+        this.fetchData();
+        this.updateCustomerDialog = false;
+      } catch (error) {
+        console.error("Error updating user:", error);
+      }
+    },
     async fetchUserData() {
       try {
         const id = this.$route.params.id;

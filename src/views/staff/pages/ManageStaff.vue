@@ -108,7 +108,6 @@ export default {
         console.error("Error registering user:", error);
       }
     },
-
     cancelAddCustomer() {
       this.addCustomerDialog = false;
     },
