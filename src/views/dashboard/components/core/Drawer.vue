@@ -120,9 +120,9 @@
           to: '/pages/staff',
         },
         {
-          title: 'Wash History',
+          title: 'Manage Customer',
           icon: 'mdi-clipboard-outline',
-          to: '/pages/wash-history',
+          to: '/pages/customer',
         },
         // {
         //   title: 'rtables',

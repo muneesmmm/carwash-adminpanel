@@ -21,7 +21,7 @@ const router = new Router({
         {
           name: 'Dashboard',
           path: '',
-          component: () => import('@/views/dashboard/Dashboard'),
+          component: () => import('@/views/wash/pages/ManageWash'),
           meta: { requiresAuth: true }, // Add this meta field for protected routes
         },
 
@@ -32,6 +32,7 @@ const router = new Router({
           path: 'pages/staff/:id',
           component: () => import('@/views/staff/pages/StaffProfile'),
         },
+        
         {
           name: 'User Profile',
           path: 'pages/user',
@@ -43,9 +44,14 @@ const router = new Router({
           component: () => import('@/views/staff/pages/ManageStaff'),
         },
         {
-          name: 'Manage Wash',
-          path: '/pages/wash-history',
-          component: () => import('@/views/wash/pages/ManageWash'),
+          name: 'Manage Customer',
+          path: 'pages/customer',
+          component: () => import('@/views/customer/pages/Dashboard'),
+        },
+        {
+          name: 'CustomerProfile',
+          path: 'pages/customer/:id',
+          component: () => import('@/views/customer/pages/CustomerProfile'),
         },
       ],
     },

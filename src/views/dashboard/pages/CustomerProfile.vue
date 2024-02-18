@@ -1,5 +1,5 @@
 <template>
-  <v-container id="staff-profile" fluid tag="section">
+  <v-container id="customer-profile" fluid tag="section">
     <v-row justify="center">
       <v-col cols="12" md="4">
         <base-material-card v-if="!isUpdate">
@@ -125,14 +125,14 @@
             </div>
           </template>
           <v-row>
-            <v-col cols="12" md="12" class="d-flex justify-end">
+            <!-- <v-col cols="12" md="12" class="d-flex justify-end">
               <v-btn small color="primary" @click="exportToPDF"><v-icon class="mr-1">mdi-file-download-outline</v-icon>Export to PDF</v-btn>
         <v-btn small color="primary" @click="exportToExcel"><v-icon class="mr-1">mdi-file-download-outline</v-icon>Export to Excel</v-btn>
 
-            </v-col>
+            </v-col> -->
           </v-row>
           <v-row>
-            <v-col cols="12" md="4">
+            <!-- <v-col cols="12" md="4">
               <v-text-field
                 placeholder="Search Vehicle..."
                 v-model="search"
@@ -163,9 +163,9 @@
                 </template>
                 <v-date-picker v-model="startDate" scrollable></v-date-picker>
               </v-menu>
-            </v-col>
-            <v-col cols="12" md="4">
-              <!-- End Date Picker -->
+            </v-col> -->
+            <!-- <v-col cols="12" md="4">
+
               <v-menu
                 v-model="menuEnd"
                 :close-on-content-click="false"
@@ -186,7 +186,7 @@
                 </template>
                 <v-date-picker v-model="endDate" scrollable></v-date-picker>
               </v-menu>
-            </v-col>
+            </v-col> -->
           </v-row>
           <v-data-table :headers="headers" :items="filteredItems">
             <template v-slot:[`item._id`]="{ item, index }">
@@ -218,9 +218,9 @@
 <script>
 import moment from "moment";
 import axios from "axios";
-import { jsPDF } from "jspdf";
-import "jspdf-autotable";
-import * as XLSX from "xlsx";
+// import { jsPDF } from "jspdf";
+// import "jspdf-autotable";
+// import * as XLSX from "xlsx";
 export default {
   data() {
     return {
@@ -245,9 +245,9 @@ export default {
   },
   created() {
     // Call the function to fetch user data when the component is created
-    this.fetchUserData();
-    this.fetchTodayData();
-    this.fetchTotalData();
+    // this.fetchUserData();
+    // this.fetchTodayData();
+    // this.fetchTotalData();
   },
   computed: {
     filteredItems() {
@@ -285,40 +285,18 @@ export default {
 
       return filtered;
     },
-    formattedStartDate() {
-      return this.startDate?this.getDate(this.startDate):'';
-    },
-    formattedEndDate() {
-      return this.endDate?this.getDate(this.endDate):'';
-    }
+    // formattedStartDate() {
+    //   return this.startDate?this.getDate(this.startDate):'';
+    // },
+    // formattedEndDate() {
+    //   return this.endDate?this.getDate(this.endDate):'';
+    // }
   },
   methods: {
-    async updateCustomer() {
-      try {
-        if (this.newPassword) {
-          this.userData.password = this.newPassword;
-        }
-        const response = await axios.post(
-          `/update/${this.userData._id}`,
-          this.userData
-        );
-
-        if (!response.status) {
-          throw new Error(`Failed to update user: ${response.statusText}`);
-        }
-        const updatedUserData = response.data;
-        this.isUpdate = !this.isUpdate;
-
-        console.log(updatedUserData);
-        this.fetchData();
-      } catch (error) {
-        console.error("Error updating user:", error);
-      }
-    },
     async fetchUserData() {
       try {
         const id = this.$route.params.id;
-        const response = await axios.post("/getuser", {
+        const response = await axios.post(`/customer/${id}`, {
           id,
         });
 
@@ -382,49 +360,49 @@ export default {
     getDate(val) {
       return moment(val).format("Do MMM YYYY");
     },
-    exportToPDF() {
-      const doc = new jsPDF();
-      const header = this.headers.map((column) => column.text);
-      const data = this.filteredItems.map((item, index) => {
-        const washDate = this.getDate(item.washDate);
-        const washTime = this.getWashTime(item.washDate);
-        return [
-          index + 1,
-          item.vehicle.vehicleNumber,
-          item.vehicle.type,
-          washDate,
-          washTime,
-        ];
-      });
-      doc.setFontSize(16); // Adjust font size if needed
-      doc.text("Car Wash Details of "+this.userData.name+this.getDate(new Date()), 10, 10);
-      doc.autoTable({
-        head: [header],
-        body: data,
-      });
+    // exportToPDF() {
+    //   const doc = new jsPDF();
+    //   const header = this.headers.map((column) => column.text);
+    //   const data = this.filteredItems.map((item, index) => {
+    //     const washDate = this.getDate(item.washDate);
+    //     const washTime = this.getWashTime(item.washDate);
+    //     return [
+    //       index + 1,
+    //       item.vehicle.vehicleNumber,
+    //       item.vehicle.type,
+    //       washDate,
+    //       washTime,
+    //     ];
+    //   });
+    //   doc.setFontSize(16); // Adjust font size if needed
+    //   doc.text("Car Wash Details of "+this.userData.name+this.getDate(new Date()), 10, 10);
+    //   doc.autoTable({
+    //     head: [header],
+    //     body: data,
+    //   });
 
-      doc.save(this.userData.name+"_"+this.getDate(new Date())+".pdf");
-    },
+    //   doc.save(this.userData.name+"_"+this.getDate(new Date())+".pdf");
+    // },
 
-    exportToExcel() {
-      const header = this.headers.map((column) => column.text);
-      const data = this.filteredItems.map((item, index) => {
-        const washDate = this.getDate(item.washDate);
-        const washTime = this.getWashTime(item.washDate);
-        return [
-          index + 1,
-          item.vehicle.vehicleNumber,
-          item.vehicle.type,
-          washDate,
-          washTime,
-        ];
-      });
+    // exportToExcel() {
+    //   const header = this.headers.map((column) => column.text);
+    //   const data = this.filteredItems.map((item, index) => {
+    //     const washDate = this.getDate(item.washDate);
+    //     const washTime = this.getWashTime(item.washDate);
+    //     return [
+    //       index + 1,
+    //       item.vehicle.vehicleNumber,
+    //       item.vehicle.type,
+    //       washDate,
+    //       washTime,
+    //     ];
+    //   });
 
-      const ws = XLSX.utils.aoa_to_sheet([header, ...data]);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
-      XLSX.writeFile(wb, this.userData.name+"_"+this.getDate(new Date())+".xlsx");
-    },
+    //   const ws = XLSX.utils.aoa_to_sheet([header, ...data]);
+    //   const wb = XLSX.utils.book_new();
+    //   XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+    //   XLSX.writeFile(wb, this.userData.name+"_"+this.getDate(new Date())+".xlsx");
+    // },
   },
 };
 </script>

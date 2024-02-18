@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import ViewProfile from "./components/core/ViewProfile.vue";
+import ViewProfile from "../components/ViewProfile.vue";
 import axios from "axios";
 
 export default {
@@ -96,8 +96,8 @@ export default {
       this.selectedUser = item;
       this.customerDialog = true;
     },
-    moreDetails(item) {
-      this.$router.push({ name: "CustomerProfile", params: { item } });
+    moreDetails(id) {
+      this.$router.push({ name: "CustomerProfile", params: { id } });
     },
     closeDialog() {
       this.customerDialog = false;

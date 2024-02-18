@@ -1,8 +1,8 @@
 <template>
-  <v-container id="staff-profile" fluid tag="section">
+  <v-container id="customer-profile" fluid tag="section">
     <v-row justify="center">
-      <v-col cols="12" md="4">
-        <base-material-card v-if="!isUpdate">
+      <v-col cols="12" md="6">
+        <base-material-card>
           <template v-slot:heading>
             <div class="display-2 font-weight-light">Profile</div>
           </template>
@@ -20,7 +20,7 @@
             <h6 class="display-1 mb-1 grey--text">
               {{ userData.phone }}
             </h6>
-            <v-btn
+            <!-- <v-btn
               color="success"
               rounded
               small
@@ -30,92 +30,43 @@
             >
             <v-icon>mdi-square-edit-outline</v-icon>
               Edit Profile
-            </v-btn>
-          </v-card-text>
-        </base-material-card>
-        <base-material-card v-if="isUpdate">
-          <template v-slot:heading>
-            <div class="display-2 font-weight-light">Edit Profile</div>
-
-            <div class="subtitle-1 font-weight-light">
-              Complete your profile
+            </v-btn> -->
+            <div class="text-center">
+              <v-divider class="my-2" />
+              <div class="d-flex justify-space-between">
+                <span class="font-weight-bold h3">Vehicles</span>
+                <span class="font-weight-bold h3"
+                  >: {{ userData.vehicles?.length }}</span
+                >
+              </div>
+              <v-divider class="my-2" />
+              <v-card
+                light
+                outlined
+                class="px-3 py-3 d-flex justify-space-between font-weight-bold"
+                v-for="(item, i) in userData.vehicles"
+                :key="i"
+              >
+                <span>{{ item.vehicleNumber }}</span>
+                <span>{{ item.type }}</span>
+              </v-card>
             </div>
-          </template>
-
-          <v-form>
-            <v-container class="py-0">
-              <v-row>
-                <v-col cols="12" md="6">
-                  <v-text-field
-                    class="purple-input"
-                    v-model="userData.name"
-                    label="User Name"
-                  />
-                </v-col>
-
-                <v-col cols="12" md="6">
-                  <v-text-field
-                    label="Email Address"
-                    v-model="userData.email"
-                    class="purple-input"
-                  />
-                </v-col>
-
-                <v-col cols="12" md="6">
-                  <v-text-field
-                    class="purple-input"
-                    v-model="userData.phone"
-                    label="Phone"
-                    type="number"
-                  />
-                </v-col>
-                <v-col cols="12" md="6">
-                  <v-text-field
-                    class="purple-input"
-                    v-model="newPassword"
-                    label="New Password"
-                    type="password"
-                  />
-                </v-col>
-                <v-col cols="12" class="text-right">
-                  <v-btn
-                    @click="isUpdate = !isUpdate"
-                    color="error"
-                    class="mr-2"
-                  >
-                    Cancel
-                  </v-btn>
-                  <v-btn @click="updateCustomer" color="primary" class="mr-0">
-                    Update Profile
-                  </v-btn>
-                </v-col>
-              </v-row>
-            </v-container>
-          </v-form>
+          </v-card-text>
         </base-material-card>
         <base-material-card>
           <template v-slot:heading>
-            <div class="display-2 font-weight-light">Today Washes</div>
+            <div class="display-2 font-weight-light">Packages</div>
           </template>
           <v-card-text class="text-center">
-            <v-card>
-              <v-row class="font-weight-bold">
-                <v-col>Vehicle Number</v-col>
-                <v-col>Type</v-col>
-                <v-col>Time</v-col>
-              </v-row>
-            </v-card>
-            <v-card v-for="(item, index) in todayWashes" :key="index">
-              <v-row>
-                <v-col>{{ item?.vehicle?.vehicleNumber }}</v-col>
-                <v-col>{{ item?.washType }}</v-col>
-                <v-col>{{ getWashTime(item.washDate) }}</v-col>
-              </v-row>
-            </v-card>
+            <v-data-table :headers="packageHeaders" :items="packages">
+              <template v-slot:[`item.status`]="{ item }">
+                {{ packageStatus(item) }}
+              </template>
+            </v-data-table>
           </v-card-text>
         </base-material-card>
       </v-col>
-      <v-col cols="12" md="8">
+      <v-col cols="12" md="6">
         <base-material-card>
           <template v-slot:heading>
             <div class="display-2 font-weight-light">Wash History</div>
@@ -124,35 +75,43 @@
               Total Completed Washes
             </div>
           </template>
+          <v-card v-if="userData">
+            <!-- Container for tabs -->
+            <v-tabs v-model="selectedVehicle" background-color="primary">
+              <!-- Iterate over vehicle numbers to create tabs -->
+              <v-tab
+                v-for="vehicle in userData.vehicles"
+                :key="vehicle._id"
+                :value="vehicle._id"
+              >
+                {{ vehicle.vehicleNumber }}
+              </v-tab>
+            </v-tabs>
+          </v-card>
           <v-row>
             <v-col cols="12" md="12" class="d-flex justify-end">
-              <v-btn small color="primary" @click="exportToPDF"><v-icon class="mr-1">mdi-file-download-outline</v-icon>Export to PDF</v-btn>
-        <v-btn small color="primary" @click="exportToExcel"><v-icon class="mr-1">mdi-file-download-outline</v-icon>Export to Excel</v-btn>
-
+              <v-btn small color="primary" @click="exportToPDF"
+                ><v-icon class="mr-1">mdi-file-download-outline</v-icon>Export
+                to PDF</v-btn
+              >
+              <v-btn small color="primary" @click="exportToExcel"
+                ><v-icon class="mr-1">mdi-file-download-outline</v-icon>Export
+                to Excel</v-btn
+              >
             </v-col>
           </v-row>
           <v-row>
-            <v-col cols="12" md="4">
-              <v-text-field
-                placeholder="Search Vehicle..."
-                v-model="search"
-                append-icon="mdi-magnify"
-                clearable
-                dense
-                solo
-              />
-            </v-col>
-            <v-col cols="12" md="4">
+            <v-col cols="12" md="6">
               <v-menu
                 v-model="menuStart"
-                :close-on-content-click="false"
+                :close-on-content-click="true"
                 transition="scale-transition"
                 offset-y
                 max-width="290px"
               >
                 <template v-slot:activator="{ on }">
                   <v-text-field
-                    v-model="formattedStartDate"
+                    v-model="startDate"
                     label="Start Date"
                     readonly
                     solo
@@ -164,18 +123,17 @@
                 <v-date-picker v-model="startDate" scrollable></v-date-picker>
               </v-menu>
             </v-col>
-            <v-col cols="12" md="4">
-              <!-- End Date Picker -->
+            <v-col cols="12" md="6">
               <v-menu
                 v-model="menuEnd"
-                :close-on-content-click="false"
+                :close-on-content-click="true"
                 transition="scale-transition"
                 offset-y
                 max-width="290px"
               >
                 <template v-slot:activator="{ on }">
                   <v-text-field
-                    v-model="formattedEndtDate"
+                    v-model="endDate"
                     solo
                     label="End Date"
                     readonly
@@ -218,12 +176,22 @@
 <script>
 import moment from "moment";
 import axios from "axios";
+// import ViewCarwashes from '../components/ViewCarwashes.vue';
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import * as XLSX from "xlsx";
 export default {
+  // components: { ViewCarwashes },
   data() {
     return {
+      packageHeaders: [
+        // { text: "ID", value: "_id" },
+        { text: "Name", value: "plan.name" },
+        { text: "Duration", value: "plan.duration" },
+        { text: "Remaining Wash", value: "remainingWashes" },
+        { text: "Remaining Interior", value: "remainingInteriors" },
+        { text: "Status", value: "status" },
+      ],
       headers: [
         { text: "ID", value: "_id" },
         { text: "Vehicle", value: "vehicle" },
@@ -241,37 +209,19 @@ export default {
       endDate: null,
       menuStart: false,
       menuEnd: false,
+      selectedVehicle: null,
+      packages: [],
     };
   },
   created() {
     // Call the function to fetch user data when the component is created
     this.fetchUserData();
-    this.fetchTodayData();
-    this.fetchTotalData();
+    this.fetchPackageData();
   },
   computed: {
     filteredItems() {
       // Filter based on search term
       let filtered = this.washHistory;
-      if (this.search) {
-        const searchTerm = this.search.toLowerCase();
-        filtered = filtered.filter((item) => {
-          return Object.values(item).some((val) => {
-            if (typeof val === "object" && val !== null) {
-              return Object.values(val).some((innerVal) => {
-                if (typeof innerVal === "string") {
-                  return innerVal.toLowerCase().includes(searchTerm);
-                }
-                return false;
-              });
-            } else if (typeof val === "string") {
-              return val.toLowerCase().includes(searchTerm);
-            }
-            return false;
-          });
-        });
-      }
-
       // Filter based on date range
       if (this.startDate && this.endDate) {
         const startDate = new Date(this.startDate);
@@ -282,43 +232,21 @@ export default {
           return washDate >= startDate && washDate <= endDate;
         });
       }
-
       return filtered;
     },
-    formattedStartDate() {
-      return this.startDate?this.getDate(this.startDate):'';
+  },
+  watch: {
+    selectedVehicle: {
+      handler() {
+        this.fetchTotalData(this.selectedVehicle);
+      },
     },
-    formattedEndDate() {
-      return this.endDate?this.getDate(this.endDate):'';
-    }
   },
   methods: {
-    async updateCustomer() {
-      try {
-        if (this.newPassword) {
-          this.userData.password = this.newPassword;
-        }
-        const response = await axios.post(
-          `/update/${this.userData._id}`,
-          this.userData
-        );
-
-        if (!response.status) {
-          throw new Error(`Failed to update user: ${response.statusText}`);
-        }
-        const updatedUserData = response.data;
-        this.isUpdate = !this.isUpdate;
-
-        console.log(updatedUserData);
-        this.fetchData();
-      } catch (error) {
-        console.error("Error updating user:", error);
-      }
-    },
     async fetchUserData() {
       try {
         const id = this.$route.params.id;
-        const response = await axios.post("/getuser", {
+        const response = await axios.post(`/customer/${id}`, {
           id,
         });
 
@@ -327,16 +255,16 @@ export default {
         }
 
         // Set userData to the received data
-        this.userData = response.data.user;
+        this.userData = response.data.customer;
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
     },
-    async fetchTodayData() {
+    async fetchPackageData() {
       try {
         const id = this.$route.params.id;
         const response = await axios.post(
-          `/today-washes/${id}`, // No request body needed
+          `/get-customer-packages/${id}`, // No request body needed
           {
             headers: {
               "Content-Type": "application/json", // Specify content type
@@ -349,16 +277,15 @@ export default {
         }
 
         // Set todayWashes to the received data
-        this.todayWashes = response.data.data;
+        this.packages = response.data.data;
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
     },
-    async fetchTotalData() {
+    async fetchTotalData(val) {
       try {
-        const id = this.$route.params.id;
         const response = await axios.post(
-          `/get-washes/${id}`, // No request body needed
+          `/get-vehicle-washes/${this.userData.vehicles[val]._id}`, // No request body needed
           {
             headers: {
               "Content-Type": "application/json", // Specify content type
@@ -372,12 +299,13 @@ export default {
 
         // Set todayWashes to the received data
         this.washHistory = response.data.data;
+        return this.washHistory;
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
     },
     getWashTime(item) {
-      return moment(item).format('h:mm A');
+      return moment(item).format("h:mm A");
     },
     getDate(val) {
       return moment(val).format("Do MMM YYYY");
@@ -397,13 +325,17 @@ export default {
         ];
       });
       doc.setFontSize(16); // Adjust font size if needed
-      doc.text("Car Wash Details of "+this.userData.name+this.getDate(new Date()), 10, 10);
+      doc.text(
+        "Car Wash Details of " + this.userData.name + this.getDate(new Date()),
+        10,
+        10
+      );
       doc.autoTable({
         head: [header],
         body: data,
       });
 
-      doc.save(this.userData.name+"_"+this.getDate(new Date())+".pdf");
+      doc.save(this.userData.name + "_" + this.getDate(new Date()) + ".pdf");
     },
 
     exportToExcel() {
@@ -423,7 +355,23 @@ export default {
       const ws = XLSX.utils.aoa_to_sheet([header, ...data]);
       const wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
-      XLSX.writeFile(wb, this.userData.name+"_"+this.getDate(new Date())+".xlsx");
+      XLSX.writeFile(
+        wb,
+        this.userData.name + "_" + this.getDate(new Date()) + ".xlsx"
+      );
+    },
+    packageStatus(item) {
+      const currentDate = new Date();
+      const endDate = new Date(item.endDate);
+      if (
+        currentDate > endDate ||
+        item.remainingWashes === 0 ||
+        item.remainingInteriors === 0
+      ) {
+        return "Expired";
+      } else {
+        return "Active";
+      }
     },
   },
 };
