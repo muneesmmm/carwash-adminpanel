@@ -6,7 +6,7 @@
         <base-material-stats-card
           color="primary"
           icon="mdi-account"
-          title="User"
+          title="Total Customers"
           :value="dashboard.customerCount"
           sub-icon="mdi-account"
           sub-text="Total registered Customer"
@@ -18,7 +18,7 @@
         <base-material-stats-card
           color="primary"
           icon="mdi-car"
-          title="Vehicles"
+          title="total Vehicles"
           :value="dashboard.vehicleCount"
           sub-icon="mdi-car"
           sub-text="Total registered Vehicles"
@@ -30,7 +30,7 @@
         <base-material-stats-card
           color="primary"
           icon="mdi-account"
-          title="Staff"
+          title="Total Staff"
           :value="dashboard.userCount-1"
           sub-icon="mdi-account"
           sub-text="Total Staff"
@@ -55,6 +55,7 @@
           v-model="search"
           append-icon="mdi-magnify"
           clearable
+          hide-details
           dense
           solo
         />
@@ -74,6 +75,7 @@
               readonly
               dense
               solo
+              hide-details
               v-on="on"
               class="mt-0"
               append-icon="mdi-calendar"
@@ -98,6 +100,7 @@
               dense
               label="End Date"
               readonly
+              hide-details
               append-icon="mdi-calendar"
               v-on="on"
             ></v-text-field>
