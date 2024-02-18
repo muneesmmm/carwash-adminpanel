@@ -24,34 +24,49 @@ const router = new Router({
           component: () => import('@/views/wash/pages/ManageWash'),
           meta: { requiresAuth: true }, // Add this meta field for protected routes
         },
-
-
+        {
+          name: 'WashInvoice',
+          path: '/invoice',
+          component: () => import('@/views/wash/pages/WashInvoice'),
+          meta: { requiresAuth: true }, // Add this meta field for protected routes
+        },
         // Pages
         {
           name: 'StaffProfile',
           path: 'pages/staff/:id',
           component: () => import('@/views/staff/pages/StaffProfile'),
+          meta: { requiresAuth: true },
         },
         
         {
           name: 'User Profile',
           path: 'pages/user',
           component: () => import('@/views/dashboard/pages/UserProfile'),
+          meta: { requiresAuth: true },
         },
         {
           name: 'Manage Staff',
           path: 'pages/staff',
           component: () => import('@/views/staff/pages/ManageStaff'),
+          meta: { requiresAuth: true },
         },
         {
           name: 'Manage Customer',
           path: 'pages/customer',
           component: () => import('@/views/customer/pages/Dashboard'),
+          meta: { requiresAuth: true },
         },
         {
           name: 'CustomerProfile',
           path: 'pages/customer/:id',
           component: () => import('@/views/customer/pages/CustomerProfile'),
+          meta: { requiresAuth: true },
+        },
+        {
+          name: 'Plan View',
+          path: 'pages/plans',
+          component: () => import('@/views/plans/pages/PlanView'),
+          meta: { requiresAuth: true },
         },
       ],
     },

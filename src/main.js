@@ -26,6 +26,7 @@
 
   // Add Axios to the Vue prototype
   Vue.prototype.$axios = axios;
+  // axios.defaults.baseURL = 'http://localhost:3000';
   axios.defaults.baseURL = 'https://carwashadmin.hexpeak.co.in';
 
   new Vue({

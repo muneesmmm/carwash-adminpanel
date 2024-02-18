@@ -124,6 +124,11 @@
           icon: 'mdi-clipboard-outline',
           to: '/pages/customer',
         },
+        {
+          title: 'Manage Plans',
+          icon: 'mdi-clipboard-outline',
+          to: '/pages/plans',
+        },
         // {
         //   title: 'rtables',
         //   icon: 'mdi-clipboard-outline',
