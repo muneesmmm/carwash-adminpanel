@@ -220,7 +220,7 @@ export default {
     },
     async dashboardData() {
       try {
-        const response = await axios.post("/dashboardData", {
+        const response = await axios.post("/dashboard-data", {
           headers: {
             "Content-Type": "application/json",
           },
