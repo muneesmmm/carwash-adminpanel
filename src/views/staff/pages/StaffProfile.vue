@@ -12,7 +12,7 @@
             </h6>
 
             <h4 class="display-2 font-weight-light mb-3 black--text">
-              {{ userData.role }}
+              role: {{ userData.role }}
             </h4>
             <h6 class="display-1 mb-1 grey--text">
               {{ userData.email }}
@@ -45,11 +45,16 @@
           <v-form>
             <v-container class="py-0">
               <v-row>
-                <v-col cols="12" md="6">
+                <v-col cols="12" md="12">
+                  <v-text-field
+                    class="purple-input"
+                    v-model="userData.username"
+                    label="Username"
+                  />
                   <v-text-field
                     class="purple-input"
                     v-model="userData.name"
-                    label="User Name"
+                    label="Name"
                   />
                 </v-col>
 
