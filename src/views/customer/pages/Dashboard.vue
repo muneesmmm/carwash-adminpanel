@@ -42,7 +42,7 @@
     <view-profile
       v-if="selectedUser"
       :dialog="customerDialog"
-      :selectedUser="selectedUser"
+      :customerData="customerData"
       @cancel="closeDialog"
     />
   </v-container>
@@ -70,6 +70,7 @@ export default {
       customerDialog: false,
       selectedUser: {},
       search: "",
+      customerData:[]
     };
   },
   computed: {
@@ -94,6 +95,21 @@ export default {
     },
     viewCustomerDetails(item) {
       this.selectedUser = item;
+
+      const userData = {};
+
+      const { selectedPackage } = this.selectedUser || {};
+      const { plan } = selectedPackage || {};
+
+      userData.planName = plan?.name || "";
+      userData.phone = this.selectedUser.phone
+      userData.duration = plan?.duration ? `${plan.duration} Days` : null;
+      userData.remainingWashes = selectedPackage?.remainingWashes || "";
+      userData.remainingInteriors = selectedPackage?.remainingInteriors || "";
+
+      // Assign the updated userData object to a component state variable
+      this.customerData = Object.assign({}, userData);
+
       this.customerDialog = true;
     },
     moreDetails(id) {
@@ -101,7 +117,7 @@ export default {
     },
     closeDialog() {
       this.customerDialog = false;
-      this.selectedUser = null;
+      this.customerData = null;
     },
     async fetchData() {
       try {

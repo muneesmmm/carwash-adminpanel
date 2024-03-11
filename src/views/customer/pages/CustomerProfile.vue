@@ -51,6 +51,29 @@
                 <span>{{ item.type }}</span>
               </v-card>
             </div>
+            <h5 v-if="selectedPlan" class="text-left">
+              Current Plan : {{ selectedPlan }}
+            </h5>
+            <v-btn small class="mt-3" @click="isUpdate=!isUpdate">{{isUpdate?'Close':'Update Plan'}}</v-btn>
+            <v-row class="mt-4 align-items-center" v-if="isUpdate">
+              <v-select
+                dense
+                solo
+                v-model="selectedPlanId"
+                :items="plans"
+                item-value="_id"
+                item-text="name"
+                label="Select Plan"
+              >
+                <template v-slot:item="{ item }">
+                  <div>
+                    <span>{{ item.name }}</span>
+                    <span>-  ₹{{ item.price }}</span>
+                  </div>
+                </template>
+              </v-select>
+              <v-btn color="primary" @click="updatePlan" small style="height: 38px;">Update</v-btn>
+            </v-row>
           </v-card-text>
         </base-material-card>
         <base-material-card>
@@ -211,10 +234,15 @@ export default {
       menuEnd: false,
       selectedVehicle: null,
       packages: [],
+      selectedPlan: "",
+      plans: [],
+      selectedPlanId:null,
+      selectedPackageId:null,
     };
   },
   created() {
     // Call the function to fetch user data when the component is created
+    this.fetchPlans();
     this.fetchUserData();
     this.fetchPackageData();
   },
@@ -256,6 +284,8 @@ export default {
 
         // Set userData to the received data
         this.userData = response.data.customer;
+        this.selectedPlan = this.userData?.selectedPackage?.plan.name;
+        this.selectedPackageId = this.userData?.selectedPackage._id;
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -371,6 +401,48 @@ export default {
         return "Expired";
       } else {
         return "Active";
+      }
+    },
+    async fetchPlans() {
+      try {
+        const response = await axios.post("/get-plans", {
+          headers: {
+            "Content-Type": "application/json",
+            // Add any other headers if needed
+          },
+        });
+
+        // Ensure the request was successful (status code 2xx)
+        if (!response.data) {
+          throw new Error("Failed to fetch data");
+        }
+        this.plans = await response.data.data;
+        // Parse the JSON response
+      } catch (e) {
+        console.error("Error fetching user data:", e);
+      } finally {
+        // Code to be executed after the request, if needed
+      }
+    },
+    async updatePlan() {
+      let data ={
+        packageId:this.selectedPackageId,
+        newPlanId:this.selectedPlanId
+      }
+      // console.log(data);
+      try {
+        const response = await axios.post("/update-selected-plan", data);
+
+          if (!response.data) {
+          throw new Error("Failed to fetch data");
+        }
+        if(response.data){
+          this.fetchUserData();
+          this.isUpdate=false
+        }
+        
+      } catch (e) {
+        console.error("Error fetching user data:", e);
       }
     },
   },

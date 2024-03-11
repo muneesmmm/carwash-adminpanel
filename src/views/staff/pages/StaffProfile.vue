@@ -5,15 +5,27 @@
         <base-material-card v-if="!isUpdate">
           <template v-slot:heading>
             <div class="display-2 font-weight-light">Profile</div>
+            <div class="subtitle-1 font-weight-light">
+              {{ userData.staffId }}
+            </div>
           </template>
           <v-card-text class="text-left">
-            <h6 class="display-2 font-weight-black mb-1 black--text">
+            <div class="d-flex justify-space-between">
+              <h6 class="display-2 font-weight-black mb-1 black--text">
               {{ userData.name }}
             </h6>
+              <h6 class="display-1 font-weight-bold mb-1 black--text">
+              {{ userData.staffId }}
+            </h6>
 
-            <h4 class="display-2 font-weight-light mb-3 black--text">
+            </div>
+
+            <!-- <h4 class="display-1 font-weight-bold mb-3 black--text">
               role: {{ userData.role }}
-            </h4>
+            </h4> -->
+            <h5 v-if="userData.location" class="display-1 font-weight-bold mb-3 black--text">
+              Current Site: {{ userData.location }}
+            </h5>
             <h6 class="display-1 mb-1 grey--text">
               {{ userData.email }}
             </h6>
@@ -48,6 +60,11 @@
                 <v-col cols="12" md="12">
                   <v-text-field
                     class="purple-input"
+                    v-model="userData.staffId"
+                    label="Staff Id"
+                  />
+                  <v-text-field
+                    class="purple-input"
                     v-model="userData.username"
                     label="Username"
                   />
@@ -72,6 +89,14 @@
                     v-model="userData.phone"
                     label="Phone"
                     type="number"
+                  />
+                </v-col>
+                <v-col cols="12" md="6">
+                  <v-text-field
+                    class="purple-input"
+                    v-model="userData.location"
+                    label="Staff Site"
+                    type="text"
                   />
                 </v-col>
                 <v-col cols="12" md="6">
@@ -246,6 +271,7 @@ export default {
       endDate: null,
       menuStart: false,
       menuEnd: false,
+      formattedEndtDate:''
     };
   },
   created() {

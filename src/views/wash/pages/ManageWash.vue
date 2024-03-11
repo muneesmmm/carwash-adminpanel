@@ -146,6 +146,7 @@ export default {
         { text: "Customer Name", value: "vehicle.owner.name" },
         { text: "Phone", value: "vehicle.owner.phone" },
         { text: "Staff Name", value: "staff.name" },
+        { text: "Wash Site", value: "staff.location" },
         { text: "Date", value: "washDate" },
         { text: "Time", value: "formattedTime" },
       ],

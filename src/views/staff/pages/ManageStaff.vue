@@ -45,6 +45,7 @@ export default {
         { text: "Name", value: "name" },
         { text: "Email", value: "email" },
         { text: "Phone", value: "phone" },
+        { text: "Current Site", value: "location" },
         { text: "Role", value: "role" },
         { text: "Action", value: "action" },
       ],

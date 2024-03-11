@@ -5,10 +5,12 @@
         <v-card-title class="text-h3"> Add New Customer </v-card-title>
         <v-card-text>
           <v-form ref="form" v-model="valid">
+            <v-text-field v-model="newCustomer.staffId" label="Staff Id"></v-text-field>
             <v-text-field v-model="newCustomer.username" label="Username"></v-text-field>
             <v-text-field v-model="newCustomer.name" label="Name"></v-text-field>
             <v-text-field v-model="newCustomer.email" label="Email"></v-text-field>
             <v-text-field v-model="newCustomer.phone" label="Phone"></v-text-field>
+            <v-text-field v-model="newCustomer.location" label="Staff Site"></v-text-field>
             <v-text-field v-model="newCustomer.password" label="Password" type="password"></v-text-field>
           </v-form>
         </v-card-text>
@@ -36,6 +38,8 @@ export default {
         email: '',
         phone: '',
         password: '',
+        location:'',
+        staffId:'',
         role:"staff"
       },
     };
