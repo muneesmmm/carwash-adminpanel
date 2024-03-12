@@ -1,6 +1,6 @@
 <template>
   <v-container id="plans" fluid tag="section">
-    <base-material-card icon="mdi-clipboard-text" title="Manage Customers">
+    <base-material-card icon="mdi-clipboard-text" title="Manage Plans">
       <v-data-table :headers="headers" :items="plans">
         <template v-slot:[`item._id`]="{ item, index }">
           <span v-if="item">{{ index + 1 }}</span>

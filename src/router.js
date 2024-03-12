@@ -68,6 +68,12 @@ const router = new Router({
           component: () => import('@/views/plans/pages/PlanView'),
           meta: { requiresAuth: true },
         },
+        {
+          name: 'Order View',
+          path: 'pages/orders',
+          component: () => import('@/views/orders/pages/OrdersView'),
+          meta: { requiresAuth: true },
+        },
       ],
     },
   ],

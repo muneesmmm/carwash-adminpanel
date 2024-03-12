@@ -64,6 +64,7 @@ export default {
         { text: "Vehicles Number", value: "vehicleNumber" },
         { text: "Phone", value: "phone" },
         { text: "Vehicles", value: "vehicles" },
+        { text: "Payment Type", value: "paymentType" },
         { text: "Action", value: "action" },
       ],
       userData: [],

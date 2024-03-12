@@ -129,6 +129,11 @@
           icon: 'mdi-clipboard-outline',
           to: '/pages/plans',
         },
+        {
+          title: 'Manage Orders',
+          icon: 'mdi-clipboard-outline',
+          to: '/pages/orders',
+        },
         // {
         //   title: 'rtables',
         //   icon: 'mdi-clipboard-outline',
