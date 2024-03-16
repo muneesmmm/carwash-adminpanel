@@ -22,17 +22,17 @@
               userData.planName ? userData.planName : "No Plans"
             }}</span>
           </v-card>
-          <v-card v-if="userData" class="d-flex px-3 py-3">
+          <v-card v-if="userData?.duration" class="d-flex px-3 py-3">
             <span class="font-weight-bold">Duration :</span>
             <v-spacer></v-spacer>
             <span class="font-weight-bold">{{ userData.duration }}</span>
           </v-card>
-          <v-card v-if="userData" class="d-flex px-3 py-3">
+          <v-card v-if="userData?.remainingInteriors" class="d-flex px-3 py-3">
             <span class="font-weight-bold">Remaining Interios :</span>
             <v-spacer></v-spacer>
             <span class="font-weight-bold">{{ userData.remainingInteriors }}</span>
           </v-card>
-          <v-card v-if="userData" class="d-flex px-3 py-3">
+          <v-card v-if="userData?.remainingWashes" class="d-flex px-3 py-3">
             <span class="font-weight-bold">Remaining Washes :</span>
             <v-spacer></v-spacer>
             <span class="font-weight-bold">{{ userData.remainingWashes }}</span>

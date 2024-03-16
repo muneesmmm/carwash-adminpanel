@@ -149,6 +149,7 @@ export default {
         { text: "Wash Site", value: "staff.location" },
         { text: "Date", value: "washDate" },
         { text: "Time", value: "formattedTime" },
+        { text: "Wash Type", value: "washType" },
       ],
       washHistory: [],
       search: "",

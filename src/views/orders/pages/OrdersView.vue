@@ -1,7 +1,19 @@
 <template>
   <v-container id="orders" fluid tag="section">
     <v-row>
-      <v-col cols="12" md="3">
+      <v-col cols="12" md="3" v-for="(item, i) in getTotalAmountByPaymentType()" :key="i">
+        <base-material-stats-card
+          color="primary"
+          icon="mdi-clipboard-outline"
+          :title="item.paymentType"
+          :value="item.totalAmount"
+          sub-icon="mdi-clipboard-outline"
+          :sub-text="`Total ` + item.paymentType"
+        />
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12" md="2">
         <!-- <v-text-field
           placeholder="Search Vehicle..."
           v-model="search"
@@ -14,6 +26,7 @@
         <v-autocomplete
           dense
           solo
+          multiple
           clearable
           label="Select Staff"
           item-text="name"
@@ -21,6 +34,16 @@
           :items="staffData"
           v-model="selectedStaff"
         ></v-autocomplete>
+      </v-col>
+      <v-col cols="12" md="2">
+        <v-select
+          dense
+          solo
+          clearable
+          label="Payment Status"
+          :items="['CASH', 'BANK', 'PAY_LATER']"
+          v-model="paymentStatus"
+        ></v-select>
       </v-col>
       <v-col cols="12" md="2">
         <v-menu
@@ -72,7 +95,7 @@
           <v-date-picker v-model="endDate" scrollable></v-date-picker>
         </v-menu>
       </v-col>
-      <v-col cols="12" md="5" class="d-flex justify-end">
+      <v-col cols="12" md="4" class="d-flex justify-end">
         <v-btn small color="primary" @click="exportToPDF"
           ><v-icon class="mr-1">mdi-file-download-outline</v-icon>Export to
           PDF</v-btn
@@ -103,8 +126,29 @@
           <span v-if="item.staff">{{ item.staff.name }}</span>
         </template>
         <template v-slot:[`item.customer.paymentType`]="{ item }">
-          <span v-if="item.customer">{{ item.customer.paymentType }}</span>
+          <v-menu offset-y>
+            <template v-slot:activator="{ on, attrs }">
+              <v-chip
+                v-bind="attrs"
+                v-on="on"
+                outlined
+                :color="getChipColor(item.customer.paymentType)"
+              >
+                {{ item.customer.paymentType }}
+              </v-chip>
+            </template>
+            <v-list>
+              <v-list-item
+                v-for="type in paymentTypes"
+                :key="type"
+                @click="updatePaymentType(item.customer, type)"
+              >
+                <v-list-item-title>{{ type }}</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
         </template>
+
         <template v-slot:[`item.plan`]="{ item }">
           <span v-if="item.package">{{ item.package?.plan?.name }}</span>
         </template>
@@ -140,9 +184,9 @@ export default {
         { text: "Date", value: "orderDate" },
         { text: "Vehicles", value: "vehicles" },
         { text: "Staff Name", value: "staff.name" },
-        { text: "Payment Type", value: "customer.paymentType" },
         { text: "Selected Plan", value: "plan" },
         { text: "Amount", value: "amount" },
+        { text: "Payment Type", value: "customer.paymentType" },
       ],
       orders: [],
       search: "",
@@ -152,6 +196,9 @@ export default {
       menuEnd: false,
       staffData: [],
       selectedStaff: "",
+      paymentStatus: "",
+      paymentTypes: ["CASH", "BANK", "PAY_LATER"], // Define payment types
+      totalData: [],
     };
   },
   computed: {
@@ -176,9 +223,14 @@ export default {
       //     });
       //   });
       // }
-      if (this.selectedStaff) {
+      if (this.selectedStaff && this.selectedStaff.length > 0) {
         filtered = filtered.filter((item) => {
-          return item.staff._id == this.selectedStaff;
+          return this.selectedStaff.includes(item.staff._id);
+        });
+      }
+      if (this.paymentStatus) {
+        filtered = filtered.filter((item) => {
+          return item.customer.paymentType == this.paymentStatus;
         });
       }
       // Filter based on date range
@@ -242,6 +294,25 @@ export default {
         // Code to be executed after the request, if needed
       }
     },
+    async fetchTotal() {
+      try {
+        const response = await axios.post("/total-amount", {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.status) {
+          throw new Error(`Failed to fetch data: ${response.statusText}`);
+        }
+
+        this.totalData = response.data.totalAmounts;
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      } finally {
+        // Code to be executed after the request, if needed
+      }
+    },
     getWashTime(item) {
       return moment(item).format("h:mm A");
     },
@@ -256,6 +327,33 @@ export default {
         }
       });
       return "₹" + total;
+    },
+    getTotalAmountByPaymentType() {
+      const totalByPaymentType = {};
+
+      this.filteredItems.forEach((item) => {
+        const paymentType = item.customer.paymentType;
+
+        if (item.package && item.package.plan && item.package.plan.price) {
+          const amount = item.package.plan.price;
+
+          if (totalByPaymentType[paymentType]) {
+            totalByPaymentType[paymentType] += amount;
+          } else {
+            totalByPaymentType[paymentType] = amount;
+          }
+        }
+      });
+
+      // Format the total amount by payment type
+      const formattedTotalByPaymentType = Object.entries(
+        totalByPaymentType
+      ).map(([paymentType, total]) => ({
+        paymentType,
+        totalAmount: "₹" + total,
+      }));
+
+      return formattedTotalByPaymentType;
     },
     exportToPDF() {
       const doc = new jsPDF();
@@ -323,10 +421,37 @@ export default {
       XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
       XLSX.writeFile(wb, "exported_file.xlsx");
     },
+    async updatePaymentType(customer, type) {
+      let data = {
+        _id: customer._id,
+        paymentType: type,
+      };
+      console.log(data);
+      try {
+        const response = await axios.post("/update-payment-status", data);
+
+        // Ensure the request was successful (status code 2xx)
+        if (!response.data) {
+          throw new Error("Failed to fetch data");
+        }
+        if (response.data) {
+          this.fetchData();
+        }
+        // Parse the JSON response
+      } catch (e) {
+        console.error("Error fetching user data:", e);
+      } finally {
+        // Code to be executed after the request, if needed
+      }
+    },
+    getChipColor(paymentType) {
+      return paymentType === "PAY_LATER" ? "red" : "primary";
+    },
   },
   mounted() {
     this.fetchData();
     this.fetchStaff();
+    this.fetchTotal();
   },
 };
 </script>

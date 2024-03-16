@@ -29,13 +29,15 @@
             {{ totalVehicles(item.vehicles) }}
           </v-Chip>
         </template>
-        <template v-slot:[`item.action`]="{ item }">
+        <template  v-slot:[`item.action`]="{ item }">
+          <div class="d-flex">
           <v-btn color="primary" small @click="viewCustomerDetails(item)"
             >View</v-btn
           >
           <v-btn color="ml-1 primary" small @click="moreDetails(item._id)"
             >More details</v-btn
           >
+          </div>
         </template>
       </v-data-table>
     </base-material-card>
@@ -64,6 +66,7 @@ export default {
         { text: "Vehicles Number", value: "vehicleNumber" },
         { text: "Phone", value: "phone" },
         { text: "Vehicles", value: "vehicles" },
+        // { text: "Staff", value: "staffName" },
         { text: "Payment Type", value: "paymentType" },
         { text: "Action", value: "action" },
       ],
@@ -145,7 +148,7 @@ export default {
         const data = await response.data;
 
         // Assuming your server responds with a property named 'customer'
-        this.userData = data.customer;
+        this.userData = data.customers;
         console.log(this.userData);
       } catch (e) {
         console.error("Error fetching user data:", e);

@@ -43,9 +43,10 @@
               <v-card
                 light
                 outlined
-                class="px-3 py-3 d-flex justify-space-between font-weight-bold"
+                class="px-3 py-3 d-flex justify-space-between font-weight-bold vehicle-card"
                 v-for="(item, i) in userData.vehicles"
                 :key="i"
+                @click="showVehicle(item)"
               >
                 <span>{{ item.vehicleNumber }}</span>
                 <span>{{ item.type }}</span>
@@ -193,6 +194,12 @@
         </base-material-card>
       </v-col>
     </v-row>
+    <view-vehicle
+      :dialog="vehicleDialog"
+      :vehicleData="vehicleData"
+      @cancel="closeDialog"
+      @save="updateVehicle"
+       />
   </v-container>
 </template>
 
@@ -203,7 +210,9 @@ import axios from "axios";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import * as XLSX from "xlsx";
+import ViewVehicle from '../components/ViewVehicle.vue';
 export default {
+  components: { ViewVehicle },
   // components: { ViewCarwashes },
   data() {
     return {
@@ -238,6 +247,8 @@ export default {
       plans: [],
       selectedPlanId:null,
       selectedPackageId:null,
+      vehicleData:{},
+      vehicleDialog:false
     };
   },
   created() {
@@ -445,6 +456,38 @@ export default {
         console.error("Error fetching user data:", e);
       }
     },
+    showVehicle(item){
+      this.vehicleData = item
+      this.vehicleDialog = true
+    },
+    closeDialog(){
+      this.vehicleDialog = false
+      this.vehicleData = {}
+    },
+    async updateVehicle(vehicle){
+      try {
+        const data = {
+          vehicleId:vehicle._id,
+          updatedVehicleNumber:vehicle.vehicleNumber,
+          updatedType:vehicle.type
+        }
+        const response = await axios.post("/update-vehicle", data);
+        if (!response.status) {
+          throw new Error(`Failed to register user: ${response.statusText}`);
+        }else{
+          this.vehicleDialog = false;
+          this.vehicleData = {}
+          this.fetchUserData();
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
   },
 };
 </script>
+<style>
+.vehicle-card{
+  cursor: pointer;
+}
+</style>
