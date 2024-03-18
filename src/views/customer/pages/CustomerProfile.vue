@@ -40,6 +40,12 @@
                 >
               </div>
               <v-divider class="my-2" />
+              <div
+                v-if="userData.vehicles.length < 2"
+                class="d-flex justify-end"
+              >
+                <v-btn @click="addVehicle" small color="primary">ADD</v-btn>
+              </div>
               <v-card
                 light
                 outlined
@@ -55,7 +61,9 @@
             <h5 v-if="selectedPlan" class="text-left">
               Current Plan : {{ selectedPlan }}
             </h5>
-            <v-btn small class="mt-3" @click="isUpdate=!isUpdate">{{isUpdate?'Close':'Update Plan'}}</v-btn>
+            <v-btn small class="mt-3" @click="isUpdate = !isUpdate">{{
+              isUpdate ? "Close" : "Update Plan"
+            }}</v-btn>
             <v-row class="mt-4 align-items-center" v-if="isUpdate">
               <v-select
                 dense
@@ -69,11 +77,17 @@
                 <template v-slot:item="{ item }">
                   <div>
                     <span>{{ item.name }}</span>
-                    <span>-  ₹{{ item.price }}</span>
+                    <span>- ₹{{ item.price }}</span>
                   </div>
                 </template>
               </v-select>
-              <v-btn color="primary" @click="updatePlan" small style="height: 38px;">Update</v-btn>
+              <v-btn
+                color="primary"
+                @click="updatePlan"
+                small
+                style="height: 38px"
+                >Update</v-btn
+              >
             </v-row>
           </v-card-text>
         </base-material-card>
@@ -199,7 +213,12 @@
       :vehicleData="vehicleData"
       @cancel="closeDialog"
       @save="updateVehicle"
-       />
+    />
+    <add-vehicle
+      :dialog="vehicleAddDialog"
+      @cancel="closeDialog"
+      @save="saveVehicle"
+    />
   </v-container>
 </template>
 
@@ -210,9 +229,10 @@ import axios from "axios";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import * as XLSX from "xlsx";
-import ViewVehicle from '../components/ViewVehicle.vue';
+import ViewVehicle from "../components/ViewVehicle.vue";
+import AddVehicle from "../components/AddVehicle.vue";
 export default {
-  components: { ViewVehicle },
+  components: { ViewVehicle, AddVehicle },
   // components: { ViewCarwashes },
   data() {
     return {
@@ -245,10 +265,11 @@ export default {
       packages: [],
       selectedPlan: "",
       plans: [],
-      selectedPlanId:null,
-      selectedPackageId:null,
-      vehicleData:{},
-      vehicleDialog:false
+      selectedPlanId: null,
+      selectedPackageId: null,
+      vehicleData: {},
+      vehicleDialog: false,
+      vehicleAddDialog: false,
     };
   },
   created() {
@@ -436,58 +457,81 @@ export default {
       }
     },
     async updatePlan() {
-      let data ={
-        packageId:this.selectedPackageId,
-        newPlanId:this.selectedPlanId
-      }
+      let data = {
+        packageId: this.selectedPackageId,
+        newPlanId: this.selectedPlanId,
+      };
       // console.log(data);
       try {
         const response = await axios.post("/update-selected-plan", data);
 
-          if (!response.data) {
+        if (!response.data) {
           throw new Error("Failed to fetch data");
         }
-        if(response.data){
+        if (response.data) {
           this.fetchUserData();
-          this.isUpdate=false
+          this.isUpdate = false;
         }
-        
       } catch (e) {
         console.error("Error fetching user data:", e);
       }
     },
-    showVehicle(item){
-      this.vehicleData = item
-      this.vehicleDialog = true
+    showVehicle(item) {
+      this.vehicleData = item;
+      this.vehicleDialog = true;
     },
-    closeDialog(){
-      this.vehicleDialog = false
-      this.vehicleData = {}
+    addVehicle() {
+      this.vehicleAddDialog = true;
     },
-    async updateVehicle(vehicle){
+    closeDialog() {
+      this.vehicleDialog = false;
+      this.vehicleAddDialog = false;
+      this.vehicleData = {};
+    },
+    async updateVehicle(vehicle) {
       try {
         const data = {
-          vehicleId:vehicle._id,
-          updatedVehicleNumber:vehicle.vehicleNumber,
-          updatedType:vehicle.type
-        }
+          vehicleId: vehicle._id,
+          updatedVehicleNumber: vehicle.vehicleNumber,
+          updatedType: vehicle.type,
+        };
         const response = await axios.post("/update-vehicle", data);
         if (!response.status) {
           throw new Error(`Failed to register user: ${response.statusText}`);
-        }else{
+        } else {
           this.vehicleDialog = false;
-          this.vehicleData = {}
+          this.vehicleData = {};
           this.fetchUserData();
         }
       } catch (error) {
         console.log(error);
       }
-    }
+    },
+    async saveVehicle(vehicleData) {
+      try {
+        const vehicle = {
+          vehicleNumber: vehicleData.vehicleNumber,
+          type: vehicleData.type,
+        };
+        const response = await axios.post(
+          `/add-car/${this.userData._id}`,
+          {vehicle}
+        );
+        if (!response.status) {
+          throw new Error(`Failed to register user: ${response.message}`);
+        } else {
+          this.vehicleAddDialog = false;
+          this.fetchUserData();
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    },
   },
 };
 </script>
 <style>
-.vehicle-card{
+.vehicle-card {
   cursor: pointer;
 }
 </style>

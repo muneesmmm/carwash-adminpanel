@@ -3,38 +3,38 @@
     <v-row>
       <v-col cols="12" md="3">
         <router-link :to="{ path: '/pages/customer' }" class="no-decoration">
-        <base-material-stats-card
-          color="primary"
-          icon="mdi-account"
-          title="Total Customers"
-          :value="dashboard.customerCount"
-          sub-icon="mdi-account"
-          sub-text="Total registered Customer"
-        />
+          <base-material-stats-card
+            color="primary"
+            icon="mdi-account"
+            title="Total Customers"
+            :value="dashboard.customerCount"
+            sub-icon="mdi-account"
+            sub-text="Total registered Customer"
+          />
         </router-link>
       </v-col>
       <v-col cols="12" md="3">
         <router-link :to="{ path: '/pages/customer' }" class="no-decoration">
-        <base-material-stats-card
-          color="primary"
-          icon="mdi-car"
-          title="total Vehicles"
-          :value="dashboard.vehicleCount"
-          sub-icon="mdi-car"
-          sub-text="Total registered Vehicles"
-        />
-      </router-link>
+          <base-material-stats-card
+            color="primary"
+            icon="mdi-car"
+            title="total Vehicles"
+            :value="dashboard.vehicleCount"
+            sub-icon="mdi-car"
+            sub-text="Total registered Vehicles"
+          />
+        </router-link>
       </v-col>
       <v-col cols="12" md="3">
         <router-link :to="{ path: '/pages/staff' }" class="no-decoration">
-        <base-material-stats-card
-          color="primary"
-          icon="mdi-account"
-          title="Total Staff"
-          :value="dashboard.userCount-1"
-          sub-icon="mdi-account"
-          sub-text="Total Staff"
-        />
+          <base-material-stats-card
+            color="primary"
+            icon="mdi-account"
+            title="Total Staff"
+            :value="dashboard.userCount - 1"
+            sub-icon="mdi-account"
+            sub-text="Total Staff"
+          />
         </router-link>
       </v-col>
       <v-col cols="12" md="3">
@@ -109,8 +109,14 @@
         </v-menu>
       </v-col>
       <v-col cols="12" md="5" class="d-flex justify-end">
-        <v-btn small color="primary" @click="exportToPDF"><v-icon class="mr-1">mdi-file-download-outline</v-icon>Export to PDF</v-btn>
-        <v-btn small color="primary" @click="exportToExcel"><v-icon class="mr-1">mdi-file-download-outline</v-icon>Export to Excel</v-btn>
+        <v-btn small color="primary" @click="exportToPDF"
+          ><v-icon class="mr-1">mdi-file-download-outline</v-icon>Export to
+          PDF</v-btn
+        >
+        <v-btn small color="primary" @click="exportToExcel"
+          ><v-icon class="mr-1">mdi-file-download-outline</v-icon>Export to
+          Excel</v-btn
+        >
       </v-col>
     </v-row>
     <base-material-card
@@ -157,7 +163,7 @@ export default {
       endDate: null,
       menuStart: false,
       menuEnd: false,
-      dashboard:null
+      dashboard: null,
     };
   },
   computed: {
@@ -186,9 +192,15 @@ export default {
       // Filter based on date range
       if (this.startDate && this.endDate) {
         const startDate = new Date(this.startDate);
+        startDate.setHours(0, 0, 0, 0); // Set time to start of the day
+
         const endDate = new Date(this.endDate);
+        endDate.setHours(23, 59, 59, 999); // Set time to end of the day
+
         filtered = filtered.filter((item) => {
           const washDate = new Date(item.washDate);
+          // Adjust washDate to start and end of the day as well
+          washDate.setHours(0, 0, 0, 0);
           return washDate >= startDate && washDate <= endDate;
         });
       }
@@ -196,11 +208,11 @@ export default {
       return filtered;
     },
     formattedStartDate() {
-      return this.startDate?this.getDate(this.startDate):'';
+      return this.startDate ? this.getDate(this.startDate) : "";
     },
     formattedEndDate() {
-      return this.endDate?this.getDate(this.endDate):'';
-    }
+      return this.endDate ? this.getDate(this.endDate) : "";
+    },
   },
   methods: {
     async totalWashes() {
@@ -292,7 +304,7 @@ export default {
   },
   mounted() {
     this.totalWashes();
-    this.dashboardData()
+    this.dashboardData();
   },
 };
 </script>

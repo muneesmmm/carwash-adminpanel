@@ -12,18 +12,20 @@
           <v-card-text class="text-left">
             <div class="d-flex justify-space-between">
               <h6 class="display-2 font-weight-black mb-1 black--text">
-              {{ userData.name }}
-            </h6>
+                {{ userData.name }}
+              </h6>
               <h6 class="display-1 font-weight-bold mb-1 black--text">
-              {{ userData.staffId }}
-            </h6>
-
+                {{ userData.staffId }}
+              </h6>
             </div>
 
             <!-- <h4 class="display-1 font-weight-bold mb-3 black--text">
               role: {{ userData.role }}
             </h4> -->
-            <h5 v-if="userData.location" class="display-1 font-weight-bold mb-3 black--text">
+            <h5
+              v-if="userData.location"
+              class="display-1 font-weight-bold mb-3 black--text"
+            >
               Current Site: {{ userData.location }}
             </h5>
             <h6 class="display-1 mb-1 grey--text">
@@ -40,7 +42,7 @@
               class="mr-0 mt-3"
               @click="isUpdate = !isUpdate"
             >
-            <v-icon>mdi-square-edit-outline</v-icon>
+              <v-icon>mdi-square-edit-outline</v-icon>
               Edit Profile
             </v-btn>
           </v-card-text>
@@ -156,9 +158,14 @@
           </template>
           <v-row>
             <v-col cols="12" md="12" class="d-flex justify-end">
-              <v-btn small color="primary" @click="exportToPDF"><v-icon class="mr-1">mdi-file-download-outline</v-icon>Export to PDF</v-btn>
-        <v-btn small color="primary" @click="exportToExcel"><v-icon class="mr-1">mdi-file-download-outline</v-icon>Export to Excel</v-btn>
-
+              <v-btn small color="primary" @click="exportToPDF"
+                ><v-icon class="mr-1">mdi-file-download-outline</v-icon>Export
+                to PDF</v-btn
+              >
+              <v-btn small color="primary" @click="exportToExcel"
+                ><v-icon class="mr-1">mdi-file-download-outline</v-icon>Export
+                to Excel</v-btn
+              >
             </v-col>
           </v-row>
           <v-row>
@@ -205,7 +212,7 @@
               >
                 <template v-slot:activator="{ on }">
                   <v-text-field
-                    v-model="formattedEndtDate"
+                    v-model="formattedEndDate"
                     solo
                     label="End Date"
                     readonly
@@ -270,8 +277,7 @@ export default {
       startDate: null,
       endDate: null,
       menuStart: false,
-      menuEnd: false,
-      formattedEndtDate:''
+      menuEnd: false
     };
   },
   created() {
@@ -306,7 +312,10 @@ export default {
       // Filter based on date range
       if (this.startDate && this.endDate) {
         const startDate = new Date(this.startDate);
+        startDate.setHours(0, 0, 0, 0); // Set time to start of the day
+
         const endDate = new Date(this.endDate);
+        endDate.setHours(23, 59, 59, 999); // Set time to end of the day
 
         filtered = filtered.filter((item) => {
           const washDate = new Date(item.washDate);
@@ -317,11 +326,11 @@ export default {
       return filtered;
     },
     formattedStartDate() {
-      return this.startDate?this.getDate(this.startDate):'';
+      return this.startDate ? this.getDate(this.startDate) : "";
     },
     formattedEndDate() {
-      return this.endDate?this.getDate(this.endDate):'';
-    }
+      return this.endDate ? this.getDate(this.endDate) : "";
+    },
   },
   methods: {
     async updateCustomer() {
@@ -408,7 +417,7 @@ export default {
       }
     },
     getWashTime(item) {
-      return moment(item).format('h:mm A');
+      return moment(item).format("h:mm A");
     },
     getDate(val) {
       return moment(val).format("Do MMM YYYY");
@@ -428,13 +437,17 @@ export default {
         ];
       });
       doc.setFontSize(16); // Adjust font size if needed
-      doc.text("Car Wash Details of "+this.userData.name+this.getDate(new Date()), 10, 10);
+      doc.text(
+        "Car Wash Details of " + this.userData.name + this.getDate(new Date()),
+        10,
+        10
+      );
       doc.autoTable({
         head: [header],
         body: data,
       });
 
-      doc.save(this.userData.name+"_"+this.getDate(new Date())+".pdf");
+      doc.save(this.userData.name + "_" + this.getDate(new Date()) + ".pdf");
     },
 
     exportToExcel() {
@@ -454,7 +467,10 @@ export default {
       const ws = XLSX.utils.aoa_to_sheet([header, ...data]);
       const wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
-      XLSX.writeFile(wb, this.userData.name+"_"+this.getDate(new Date())+".xlsx");
+      XLSX.writeFile(
+        wb,
+        this.userData.name + "_" + this.getDate(new Date()) + ".xlsx"
+      );
     },
   },
 };

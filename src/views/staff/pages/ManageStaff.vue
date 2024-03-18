@@ -41,7 +41,8 @@ export default {
   data() {
     return {
       headers: [
-        { text: "ID", value: "_id" },
+        { text: "No.", value: "_id" },
+        { text: "ID", value: "staffId" },
         { text: "Name", value: "name" },
         { text: "Email", value: "email" },
         { text: "Phone", value: "phone" },

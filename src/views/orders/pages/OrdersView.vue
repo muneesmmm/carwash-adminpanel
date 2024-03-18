@@ -1,7 +1,12 @@
 <template>
   <v-container id="orders" fluid tag="section">
     <v-row>
-      <v-col cols="12" md="3" v-for="(item, i) in getTotalAmountByPaymentType()" :key="i">
+      <v-col
+        cols="12"
+        md="3"
+        v-for="(item, i) in getTotalAmountByPaymentType()"
+        :key="i"
+      >
         <base-material-stats-card
           color="primary"
           icon="mdi-clipboard-outline"
@@ -236,7 +241,11 @@ export default {
       // Filter based on date range
       if (this.startDate && this.endDate) {
         const startDate = new Date(this.startDate);
+        startDate.setHours(0, 0, 0, 0); // Set time to start of the day
+
         const endDate = new Date(this.endDate);
+        endDate.setHours(23, 59, 59, 999); // Set time to end of the day
+
         filtered = filtered.filter((item) => {
           const orderDate = new Date(item.orderDate);
           return orderDate >= startDate && orderDate <= endDate;
