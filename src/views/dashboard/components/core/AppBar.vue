@@ -84,14 +84,15 @@
       </v-list>
     </v-menu> -->
 
-    <!-- <v-btn
+    <v-btn
       class="ml-2"
       min-width="0"
       text
-      to="/pages/user"
+      @click="logout()"
     >
-      <v-icon>mdi-account</v-icon>
-    </v-btn> -->
+      <v-icon>mdi-logout</v-icon>
+      logout
+    </v-btn>
   </v-app-bar>
 </template>
 
@@ -160,6 +161,9 @@ export default {
     ...mapMutations({
       setDrawer: "SET_DRAWER",
     }),
+    logout() {
+      this.$store.dispatch('logout');
+    }
   },
 };
 </script>

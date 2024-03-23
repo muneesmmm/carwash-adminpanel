@@ -74,16 +74,16 @@ export default {
   methods: {
     async login() {
       try {
-        const response = await axios.post("/login", {
+        const response = await axios.post("/admin-login", {
           username: this.username,
           password: this.password,
         });
 
         const data = response.data;
 
-        if (data.user) {
+        if (data.admin) {
           // Dispatch the 'login' action with user data
-          this.$store.dispatch("login", data.user);
+          this.$store.dispatch("login", data.admin);
           this.$router.push("/");
         } else {
           // Login failed, handle accordingly (e.g., show error message)

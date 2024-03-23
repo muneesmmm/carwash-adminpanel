@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import router from './router';
 
 Vue.use(Vuex)
 
@@ -44,6 +45,7 @@ export default new Vuex.Store({
     },
     logout({ commit }) {
       commit('RESET_USER_STATE');
+      router.push({ name: 'Login' });
     },
   },
   getters: {
