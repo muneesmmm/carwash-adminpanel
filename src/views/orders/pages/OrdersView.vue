@@ -1,20 +1,9 @@
 <template>
   <v-container id="orders" fluid tag="section">
     <v-row>
-      <v-col
-        cols="12"
-        md="3"
-        v-for="(item, i) in getTotalAmountByPaymentType()"
-        :key="i"
-      >
-        <base-material-stats-card
-          color="primary"
-          icon="mdi-clipboard-outline"
-          :title="item.paymentType"
-          :value="item.totalAmount"
-          sub-icon="mdi-clipboard-outline"
-          :sub-text="`Total ` + item.paymentType"
-        />
+      <v-col cols="12" md="3" v-for="(item, i) in getTotalAmountByPaymentType()" :key="i">
+        <base-material-stats-card color="primary" icon="mdi-clipboard-outline" :title="item.paymentType"
+          :value="item.totalAmount" sub-icon="mdi-clipboard-outline" :sub-text="`Total ` + item.paymentType" />
       </v-col>
     </v-row>
     <v-row>
@@ -28,87 +17,41 @@
           dense
           solo
         /> -->
-        <v-autocomplete
-          dense
-          solo
-          multiple
-          clearable
-          label="Select Staff"
-          item-text="name"
-          item-value="_id"
-          :items="staffData"
-          v-model="selectedStaff"
-        ></v-autocomplete>
+        <v-autocomplete dense solo multiple clearable label="Select Staff" item-text="name" item-value="_id"
+          :items="staffData" v-model="selectedStaff"></v-autocomplete>
       </v-col>
       <v-col cols="12" md="2">
-        <v-select
-          dense
-          solo
-          clearable
-          label="Payment Status"
-          :items="['CASH', 'BANK', 'PAY_LATER']"
-          v-model="paymentStatus"
-        ></v-select>
+        <v-select dense solo clearable label="Payment Status" :items="['CASH', 'BANK', 'PAY_LATER']"
+          v-model="paymentStatus"></v-select>
       </v-col>
       <v-col cols="12" md="2">
-        <v-menu
-          v-model="menuStart"
-          :close-on-content-click="true"
-          transition="scale-transition"
-          offset-y
-          max-width="290px"
-        >
+        <v-menu v-model="menuStart" :close-on-content-click="true" transition="scale-transition" offset-y
+          max-width="290px">
           <template v-slot:activator="{ on }">
-            <v-text-field
-              v-model="formattedStartDate"
-              clearable
-              label="Start Date"
-              readonly
-              dense
-              solo
-              hide-details
-              v-on="on"
-              class="mt-0"
-              append-icon="mdi-calendar"
-            ></v-text-field>
+            <v-text-field v-model="formattedStartDate" clearable label="Start Date" readonly dense solo hide-details
+              v-on="on" class="mt-0" append-icon="mdi-calendar"></v-text-field>
           </template>
           <v-date-picker v-model="startDate" scrollable></v-date-picker>
         </v-menu>
       </v-col>
       <v-col cols="12" md="2">
         <!-- End Date Picker -->
-        <v-menu
-          v-model="menuEnd"
-          :close-on-content-click="true"
-          transition="scale-transition"
-          offset-y
-          max-width="290px"
-        >
+        <v-menu v-model="menuEnd" :close-on-content-click="true" transition="scale-transition" offset-y
+          max-width="290px">
           <template v-slot:activator="{ on }">
-            <v-text-field
-              v-model="formattedEndDate"
-              solo
-              dense
-              clearable
-              label="End Date"
-              readonly
-              hide-details
-              append-icon="mdi-calendar"
-              v-on="on"
-            ></v-text-field>
+            <v-text-field v-model="formattedEndDate" solo dense clearable label="End Date" readonly hide-details
+              append-icon="mdi-calendar" v-on="on"></v-text-field>
           </template>
           <v-date-picker v-model="endDate" scrollable></v-date-picker>
         </v-menu>
       </v-col>
       <v-col cols="12" md="4" class="d-flex justify-end">
-        <v-btn small color="primary" @click="exportToPDF"
-          ><v-icon class="mr-1">mdi-file-download-outline</v-icon>Export to
-          PDF</v-btn
-        >
-        <v-btn small color="primary" @click="exportToExcel"
-          ><v-icon class="mr-1">mdi-file-download-outline</v-icon>Export to
-          Excel</v-btn
-        >
+        <v-btn small color="primary" @click="exportToPDF"><v-icon class="mr-1">mdi-file-download-outline</v-icon>Export
+          to
+          PDF</v-btn>
+        <v-btn small color="primary" @click="exportToExcel"><v-icon
+            class="mr-1">mdi-file-download-outline</v-icon>Export to
+          Excel</v-btn>
       </v-col>
     </v-row>
     <base-material-card icon="mdi-clipboard-text" title="Manage Orders">
@@ -122,9 +65,7 @@
         </template>
         <template v-slot:[`item.vehicles`]="{ item }">
           <span v-if="item.customer">
-            <span v-for="(vehicle, i) in item.customer.vehicles" :key="i"
-              >{{ vehicle.vehicleNumber }},</span
-            >
+            <span v-for="(vehicle, i) in item.customer.vehicles" :key="i">{{ vehicle.vehicleNumber }},</span>
           </span>
         </template>
         <template v-slot:[`item.staff.name`]="{ item }">
@@ -133,21 +74,12 @@
         <template v-slot:[`item.customer.paymentType`]="{ item }">
           <v-menu offset-y>
             <template v-slot:activator="{ on, attrs }">
-              <v-chip
-                v-bind="attrs"
-                v-on="on"
-                outlined
-                :color="getChipColor(item.customer.paymentType)"
-              >
+              <v-chip v-bind="attrs" v-on="on" outlined :color="getChipColor(item.customer.paymentType)">
                 {{ item.customer.paymentType }}
               </v-chip>
             </template>
             <v-list>
-              <v-list-item
-                v-for="type in paymentTypes"
-                :key="type"
-                @click="updatePaymentType(item.customer, type)"
-              >
+              <v-list-item v-for="type in paymentTypes" :key="type" @click="updatePaymentType(item.customer, type)">
                 <v-list-item-title>{{ type }}</v-list-item-title>
               </v-list-item>
             </v-list>
@@ -164,9 +96,7 @@
         <!-- Footer to display total amount -->
         <template v-slot:footer>
           <div class="text-center mt-5">
-            <span class="font-weight-bold"
-              >Total Amount : {{ getTotalAmount() }}</span
-            >
+            <span class="font-weight-bold">Total Amount : {{ getTotalAmount() }}</span>
           </div>
         </template>
       </v-data-table>
@@ -210,26 +140,28 @@ export default {
     filteredItems() {
       // Filter based on search term
       let filtered = this.orders;
-      // if (this.search) {
-      //   const searchTerm = this.search.toLowerCase();
-      //   filtered = filtered.filter((item) => {
-      //     return Object.values(item).some((val) => {
-      //       if (typeof val === "object" && val !== null) {
-      //         return Object.values(val).some((innerVal) => {
-      //           if (typeof innerVal === "string") {
-      //             return innerVal.toLowerCase().includes(searchTerm);
-      //           }
-      //           return false;
-      //         });
-      //       } else if (typeof val === "string") {
-      //         return val.toLowerCase().includes(searchTerm);
-      //       }
-      //       return false;
-      //     });
-      //   });
-      // }
+      if (this.search) {
+        const searchTerm = this.search.toLowerCase();
+        filtered = filtered.filter((item) => {
+          return Object.values(item).some((val) => {
+            if (typeof val === "object" && val !== null) {
+              return Object.values(val).some((innerVal) => {
+                if (typeof innerVal === "string") {
+                  return innerVal.toLowerCase().includes(searchTerm);
+                }
+                return false;
+              });
+            } else if (typeof val === "string") {
+              return val.toLowerCase().includes(searchTerm);
+            }
+            return false;
+          });
+        });
+      }
       if (this.selectedStaff && this.selectedStaff.length > 0) {
         filtered = filtered.filter((item) => {
+          console.log(this.selectedStaff, "selected")
+          console.log(item.staff._id)
           return this.selectedStaff.includes(item.staff._id);
         });
       }
@@ -368,6 +300,7 @@ export default {
       const doc = new jsPDF();
       const header = this.headers.map((column) => column.text);
       let total = 0; // Initialize total amount
+      const paymentTypeTotals = {}; // Object to keep track of totals by payment type
       const data = this.filteredItems.map((item, index) => {
         const staffName = item.staff ? item.staff.name : "";
         const vehicle = [];
@@ -377,19 +310,32 @@ export default {
         const orderDate = this.getDate(item.orderDate);
         const amount = item.package.plan.price; // Extract the price from item
         total += amount; // Accumulate the total amount
+
+        // Calculate totals by payment type
+        const paymentType = item.customer.paymentType;
+        if (!paymentTypeTotals[paymentType]) {
+          paymentTypeTotals[paymentType] = 0;
+        }
+        paymentTypeTotals[paymentType] += amount;
+
         return [
           index + 1,
           orderDate,
           vehicle.join(", "), // Join vehicles with comma
           staffName, // Use conditional staffName variable
-          item.customer.paymentType,
           item.package.plan.name,
           amount, // Add amount
+          paymentType
         ];
       });
 
-      // Add total amount to the last row of the data array
+      // Add total amount to the data array
       data.push(["", "", "", "", "", "Total:", total]);
+
+      // Add total amounts by payment type to the data array
+      Object.keys(paymentTypeTotals).forEach((type) => {
+        data.push(["", "", "", "", "", `${type} Total:`, paymentTypeTotals[type]]);
+      });
 
       doc.autoTable({
         head: [header],
@@ -399,9 +345,11 @@ export default {
       doc.save("exported_file.pdf");
     },
 
+
     exportToExcel() {
       const header = this.headers.map((column) => column.text);
       let total = 0; // Initialize total amount
+      const paymentTypeTotals = {}; // Object to keep track of totals by payment type
       const data = this.filteredItems.map((item, index) => {
         const staffName = item.staff ? item.staff.name : "";
         const vehicle = [];
@@ -411,19 +359,32 @@ export default {
         const orderDate = this.getDate(item.orderDate);
         const amount = item.package.plan.price; // Extract the price from item
         total += amount; // Accumulate the total amount
+
+        // Calculate totals by payment type
+        const paymentType = item.customer.paymentType;
+        if (!paymentTypeTotals[paymentType]) {
+          paymentTypeTotals[paymentType] = 0;
+        }
+        paymentTypeTotals[paymentType] += amount;
+
         return [
           index + 1,
           orderDate,
           vehicle.join(", "), // Join vehicles with comma
           staffName, // Use conditional staffName variable
-          item.customer.paymentType,
           item.package.plan.name,
           amount, // Add amount
+          paymentType
         ];
       });
 
-      // Add total amount to the last row of the data array
+      // Add total amount to the data array
       data.push(["", "", "", "", "", "Total:", total]);
+
+      // Add total amounts by payment type to the data array
+      Object.keys(paymentTypeTotals).forEach((type) => {
+        data.push(["", "", "", "", "", `${type} Total:`, paymentTypeTotals[type]]);
+      });
 
       const ws = XLSX.utils.aoa_to_sheet([header, ...data]);
       const wb = XLSX.utils.book_new();
@@ -465,8 +426,8 @@ export default {
 };
 </script>
 <style>
-.v-data-table > .v-data-table__wrapper > table > thead > tr > th,
-.v-data-table > .v-data-table__wrapper > table > tfoot > tr > th {
+.v-data-table>.v-data-table__wrapper>table>thead>tr>th,
+.v-data-table>.v-data-table__wrapper>table>tfoot>tr>th {
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
